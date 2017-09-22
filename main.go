@@ -29,7 +29,8 @@ func main() {
 	if len(os.Args) != 2 {
 		os.Exit(1)
 	}
-	b, err := exec.Command("git", "rev-list", "-n", "1", os.Args[1]).CombinedOutput()
+	name := os.Args[1]
+	b, err := exec.Command("git", "rev-list", "-n", "1", name).CombinedOutput()
 	if err == nil && len(b) > 0 {
 		openCommitPage(string(b))
 		return
@@ -47,10 +48,8 @@ func main() {
 		log.Fatal(err)
 	}
 	for _, tag := range tags {
-		for _, arg := range os.Args[1:] {
-			if tag.Ref == "refs/tags/"+arg {
-				openCommitPage(tag.Object.Sha)
-			}
+		if tag.Ref == "refs/tags/"+name {
+			openCommitPage(tag.Object.Sha)
 		}
 	}
 }
